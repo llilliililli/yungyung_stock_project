@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "78745233828",
+    "project_id": "yungyung-stock",
+    "storage_bucket": "yungyung-stock.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78745233828:android:363042b8894b5de131f931",
+        "android_client_info": {
+          "package_name": "com.example.yungyung_stock_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmanbPSm8H01lHSk5pd4Kg_Qz97lNrQ2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
