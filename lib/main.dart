@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:yungyung_stock_project/stockView.dart';
 import 'firebase_options.dart';
+import 'package:yungyung_stock_project/stockCalView.dart';
 
 
 var logger = Logger(
@@ -41,6 +42,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.yellow,
       ),
       home: const MyHomePage(),
+      //home: const StockCalViewPage(title: '융융증권',),
     );
   }
 
