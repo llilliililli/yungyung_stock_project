@@ -225,6 +225,29 @@ class _StockViewPageState extends State<StockViewPage> {
                                     }
                                 }
                               ),
+
+                     Text("보유 현금"),
+                      // 보유 현금 가져오기
+                      FutureBuilder(future: _firestore.collection('users').doc(_fireauth.currentUser!.uid).get(), 
+                                    builder: (BuildContext context, AsyncSnapshot snapshot){
+                                      if (snapshot.hasData == false) {
+                                          return CircularProgressIndicator();
+                                        }
+                                        //error가 발생하게 될 경우 반환하게 되는 부분
+                                        else if (snapshot.hasError) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Error: ${snapshot.error}',
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                          );
+                                        }
+                                        else { // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
+                                          return Text(koMoneyUnit.format(int.parse(snapshot.data['money'].toString())));
+                                        }
+                                    }
+                                  ),
                         
                   TextButton(
                     onPressed: () =>  signOut(), //button Click 
@@ -266,7 +289,7 @@ class _StockViewPageState extends State<StockViewPage> {
                   const Text("총 평가금액"),
                   //Text(koMoneyUnit.format(calTotalMoney()))
                   StreamBuilder(
-                    stream: _firestore.collection('stock').snapshots(),
+                    stream: _firestore.collection('users').doc(_fireauth.currentUser?.uid).collection('stocks').snapshots(),
                     builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -307,7 +330,7 @@ class _StockViewPageState extends State<StockViewPage> {
                       const Text("작년 금액"),
                       //Text(calAfterMoney('m')),
                       StreamBuilder(
-                        stream: _firestore.collection('stock').snapshots(),
+                        stream: _firestore.collection('users').doc(_fireauth.currentUser?.uid).collection('stocks').snapshots(),
                         builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -322,10 +345,10 @@ class _StockViewPageState extends State<StockViewPage> {
                           int cal = 0; //작년대비 계산 (금액)
                           double per = 0; //작년대비 계산 (%)
                           for(int i=0 ; i<docs.length;i++){
-                          String pmoney = docs[i]['pmoney'] as String;
-                          String stock = docs[i]['stock'] as String;
-                          total = total+(int.parse(pmoney)*int.parse(stock));
-                          after = after+int.parse(pmoney);
+                            String smoney = docs[i]['smoney'] as String;
+                            String stock = docs[i]['stock'] as String;
+                            //total = total+(int.parse(smoney)*int.parse(stock));
+                            after = after+(int.parse(smoney)*int.parse(stock));
                           }
 
                           String afterS = '';
@@ -361,7 +384,7 @@ class _StockViewPageState extends State<StockViewPage> {
                       const Text("작년 대비"),
                       //Text(calAfterMoney('e')),
                       StreamBuilder(
-                        stream: _firestore.collection('stock').snapshots(),
+                        stream:_firestore.collection('users').doc(_fireauth.currentUser?.uid).collection('stocks').snapshots(),
                         builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -376,22 +399,23 @@ class _StockViewPageState extends State<StockViewPage> {
                           int cal = 0; //작년대비 계산 (금액)
                           double per = 0; //작년대비 계산 (%)
                           for(int i=0 ; i<docs.length;i++){
-                          String pmoney = docs[i]['pmoney'] as String;
-                          String stock = docs[i]['stock'] as String;
-                          total = total+(int.parse(pmoney)*int.parse(stock));
-                          after = after+int.parse(pmoney);
+                            String smoney = docs[i]['smoney'] as String;
+                            String pmoney = docs[i]['pmoney'] as String;
+                            String stock = docs[i]['stock'] as String;
+                            total = total+(int.parse(pmoney)*int.parse(stock));
+                            after = after+(int.parse(smoney)*int.parse(stock));
                           }
 
                           String afterS = '';
 
                           cal = total - after;
-                          per = after/(total/100);
+                          per = cal/after*100;
                           afterS =  moneyUnit.format(cal);
 
-                          if (after > 0){ 
-                            afterS = '+'+afterS+' ( +'+per.toStringAsFixed(0)+'% )';
+                          if (cal > 0){ 
+                            afterS = afterS+' ( +'+per.toStringAsFixed(0)+'% )';
                           }else{
-                            afterS = '-'+afterS+' ( -'+per.toStringAsFixed(0)+'% )';
+                            afterS = afterS+' ( '+per.toStringAsFixed(0)+'% )';
                           }
 
 
