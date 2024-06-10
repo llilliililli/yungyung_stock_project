@@ -183,38 +183,83 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
                   //         return Text("주식 : $showMoney");
                   //       }
                   //   }
-                  // ),
-                  
-                  FutureBuilder(
-                    future: _firestore.collection('users').doc(widget.uid).get(), 
-                    builder: (BuildContext context, AsyncSnapshot snapshot){
-                        if (snapshot.hasData == false) {
-                          return CircularProgressIndicator();
-                        }
-                        //error가 발생하게 될 경우 반환하게 되는 부분
-                        else if (snapshot.hasError) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Error: ${snapshot.error}',
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          );
-                        }
-                        else { // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
-                          int money = snapshot.data['money'];
+                  // ),  
+                  //
+
+                  StreamBuilder(
+                        //stream: _firestore.collection('stock').snapshots(),
+                        stream: _firestore.collection('users').snapshots(),
+                        builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          final docs = snapshot.data!.docs;
+
+                          print('docs :: ${docs}');
+
+                          
+
+
+                           // 사용자 현금가져오기
+                           for(int i=0; i<docs.length;i++){
+                              if(docs[i]['uid'] == widget.uid){
+                                money = docs[i]['money'];
+                              }
+                           }
+
                           String showMoney =  '';      
 
                           if (money > 0){ 
                             showMoney = '+'+money.toString();
-                          }else{
+                          }else if(money == 0){
+                            showMoney = money.toString();
+                          }
+                          else{
                             showMoney = '-'+money.toString();
                           }
 
+
+                          
+
                           return Text("현금 : $showMoney");
+                          
                         }
-                    }
-                  ),
+                      ),        
+
+                  // FutureBuilder(
+                  //   future: _firestore.collection('users').doc(widget.uid).get(), 
+                  //   builder: (BuildContext context, AsyncSnapshot snapshot){
+                  //       if (snapshot.hasData == false) {
+                  //         return CircularProgressIndicator();
+                  //       }
+                  //       //error가 발생하게 될 경우 반환하게 되는 부분
+                  //       else if (snapshot.hasError) {
+                  //         return Padding(
+                  //           padding: const EdgeInsets.all(8.0),
+                  //           child: Text(
+                  //             'Error: ${snapshot.error}',
+                  //             style: TextStyle(fontSize: 15),
+                  //           ),
+                  //         );
+                  //       }
+                  //       else { // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
+                  //         money = snapshot.data['money'];
+                  //         String showMoney =  '';      
+
+                  //         if (money > 0){ 
+                  //           showMoney = '+'+money.toString();
+                  //         }else{
+                  //           showMoney = '-'+money.toString();
+                  //         }
+
+                  //         return Text("현금 : $showMoney");
+                  //       }
+                  //   }
+                  // ),
+
                 ],
               ),
             ),
@@ -287,7 +332,7 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
                               },
                               child:  stockContainer(
                                 title: docs[index]["title"] as String,
-                                smoney: docs[index]["smoney"] as String,
+                                pmoney: docs[index]["pmoney"] as String,
                                 stock:  docs[index]['stock'] as String,
                               ),
                               );
@@ -314,7 +359,7 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
 
   final List<TextEditingController> _stockController = [];
 
-  Widget stockContainer({String title ='',String smoney ='0',  String stock = '0', Color colorData = Colors.yellow, int index = 0}){ //주식리스트 Container
+  Widget stockContainer({String title ='',String pmoney ='0',  String stock = '0', Color colorData = Colors.yellow, int index = 0}){ //주식리스트 Container
     return Container(
            width: MediaQuery.of(context).size.width,
            height: 100,
@@ -341,11 +386,11 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
                         children: [
                           Flexible(
                             flex: 1,
-                            child: Container(alignment: Alignment.center,child: Text('매입금액'),),
+                            child: Container(alignment: Alignment.center,child: Text('현재금액'),),
                           ),
                           Flexible(
                             flex: 1,
-                            child: Text(smoney),
+                            child: Text(pmoney),
                           )
                         ],
                         )                   
@@ -383,7 +428,7 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
                           ),
                           Flexible(
                             flex: 1,
-                            child: Text(koMoneyUnit.format((int.parse(smoney) * int.parse(stock))).toString()),
+                            child: Text(koMoneyUnit.format((int.parse(pmoney) * int.parse(stock))).toString()),
                           ),
                         ],
                         )                   
@@ -522,7 +567,7 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
                   flex: 2,
                   child: Column(
                     children: [
-                       Text("매입금액", 
+                       Text("현재금액", 
                         style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.grey
@@ -531,7 +576,7 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
                         Padding(
                             padding: const EdgeInsets.all(8),
                         child: Text(
-                          smoney,
+                          pmoney,
                           maxLines: 1, //최대 몇줄까지 표시하는지 지정
                           style: TextStyle(
                             fontSize: 15,
@@ -642,7 +687,7 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
     print("주식구매");
     try{
       print('money :: $money');
-      print(_fireauth.currentUser?.uid);
+      print(widget.uid);
       print(widget.name);
       print(sname);
       print(pmoney);
@@ -661,7 +706,7 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
         print('수량부족');
         message = '구매할 주식 수량을 입력해주세요.';
       }
-      else if(money <= buyStockMoney ){
+      else if(money < buyStockMoney ){
         print('현금부족');
         print(money.toString());
         print(buyStockMoney);
@@ -671,7 +716,7 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
         print('구매완료');
         message = '구매완료';
 
-        await _firestore.collection("users").doc(_fireauth.currentUser?.uid).collection('stocks').doc(sname).set({
+        await _firestore.collection("users").doc(widget.uid).collection('stocks').doc(sname).set({
           "name" : sname,
           "pmoney" : pmoney,
           "smoney" : smoney,
@@ -679,10 +724,10 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
           "title" : title
         });
 
-        await _firestore.collection("users").doc(_fireauth.currentUser?.uid).set({
+        await _firestore.collection("users").doc(widget.uid).set({
           "money": money-buyStockMoney,
           "name" : widget.name,
-          "uid" : _fireauth.currentUser?.uid
+          "uid" : widget.uid
         });
        
       }
@@ -710,7 +755,7 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
     print("주식판매");
     try{
       print('money :: $money');
-      print(_fireauth.currentUser?.uid);
+      print(widget.uid);
       print(widget.name);
       print(sname);
       print(pmoney);
@@ -745,7 +790,7 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
         print('판매완료');
         message = '판매완료';
 
-        await _firestore.collection("users").doc(_fireauth.currentUser?.uid).collection('stocks').doc(sname).set({
+        await _firestore.collection("users").doc(widget.uid).collection('stocks').doc(sname).set({
           "name" : sname,
           "pmoney" : pmoney,
           "smoney" : smoney,
@@ -753,10 +798,10 @@ void showPopup(context, title, sname,smoney,pmoney,stock){ //구매/판매 팝�
           "title" : title
         });
 
-        await _firestore.collection("users").doc(_fireauth.currentUser?.uid).set({
+        await _firestore.collection("users").doc(widget.uid).set({
           "money": money+sellStockMoney,
           "name" : widget.name,
-          "uid" : _fireauth.currentUser?.uid
+          "uid" : widget.uid
         });
        
       }

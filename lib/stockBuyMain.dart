@@ -194,36 +194,36 @@ class _StockBuyMainPageState extends State<StockBuyMainPage> {
                 children: [
                   const Text("주식구매자 선택"),
                   //Text(koMoneyUnit.format(calTotalMoney()))
-                   FutureBuilder(
-                    future: _firestore.collection('users').doc(_fireauth.currentUser!.uid).get(), 
-                    builder: (BuildContext context, AsyncSnapshot snapshot){
-                        if (snapshot.hasData == false) {
-                          return CircularProgressIndicator();
-                        }
-                        //error가 발생하게 될 경우 반환하게 되는 부분
-                        else if (snapshot.hasError) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Error: ${snapshot.error}',
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          );
-                        }
-                        else { // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
-                          int money = snapshot.data['money'];
-                          String showMoney =  '';      
+                  //  FutureBuilder(
+                  //   future: _firestore.collection('users').doc(_fireauth.currentUser!.uid).get(), 
+                  //   builder: (BuildContext context, AsyncSnapshot snapshot){
+                  //       if (snapshot.hasData == false) {
+                  //         return CircularProgressIndicator();
+                  //       }
+                  //       //error가 발생하게 될 경우 반환하게 되는 부분
+                  //       else if (snapshot.hasError) {
+                  //         return Padding(
+                  //           padding: const EdgeInsets.all(8.0),
+                  //           child: Text(
+                  //             'Error: ${snapshot.error}',
+                  //             style: TextStyle(fontSize: 15),
+                  //           ),
+                  //         );
+                  //       }
+                  //       else { // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
+                  //         int money = snapshot.data['money'];
+                  //         String showMoney =  '';      
 
-                          if (money > 0){ 
-                            showMoney = '+'+money.toString();
-                          }else{
-                            showMoney = '-'+money.toString();
-                          }
+                  //         if (money > 0){ 
+                  //           showMoney = '+'+money.toString();
+                  //         }else{
+                  //           showMoney = '-'+money.toString();
+                  //         }
 
-                          return Text(showMoney);
-                        }
-                    }
-                  ),
+                  //         return Text(showMoney);
+                  //       }
+                  //   }
+                  // ),
                 ],
               ),
             ),
@@ -256,7 +256,11 @@ class _StockBuyMainPageState extends State<StockBuyMainPage> {
                           }
                           final docs = snapshot.data!.docs;
 
+                          print('doc.length ::'+docs.length.toString());
+
                           print('doc :: $docs');
+                          print('uid1 :: '+docs[0]['uid'].toString());
+                          print('uid2 :: '+docs[1]['uid'].toString());
 
                           return ListView.builder(
                             itemCount: docs.length,
@@ -289,6 +293,7 @@ class _StockBuyMainPageState extends State<StockBuyMainPage> {
   }
 
   void goBuyDetail(String name,String uid){
+    print('goBuyDetail :: name :: '+name+' / uid :: '+uid);
     Get.to(() => StockBuyDetailPage(name: name,uid: uid));
   }
 
