@@ -150,38 +150,43 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
                   const Text("총 소지금액"),
                   //Text("주식 : ${stockMoney.toString()}"),
                   //Text(koMoneyUnit.format(calTotalMoney()))
-                   FutureBuilder(
-                    future: _firestore.collection('users').doc(_fireauth.currentUser!.uid).get(), 
-                    builder: (BuildContext context, AsyncSnapshot snapshot){
-                        if (snapshot.hasData == false) {
-                          return CircularProgressIndicator();
-                        }
-                        //error가 발생하게 될 경우 반환하게 되는 부분
-                        else if (snapshot.hasError) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Error: ${snapshot.error}',
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          );
-                        }
-                        else { // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
-                          money = snapshot.data['money'];
-                          String showMoney =  '';      
 
-                          if (money > 0){ 
-                            showMoney = '+'+money.toString();
-                          }else{
-                            showMoney = '-'+money.toString();
-                          }
+                  //  FutureBuilder(
+                  //   future: _firestore.collection('users').doc(widget.uid).collection("stocks").get(), 
+                  //   builder: (BuildContext context, AsyncSnapshot snapshot){
+                  //       if (snapshot.hasData == false) {
+                  //         return CircularProgressIndicator();
+                  //       }
+                  //       //error가 발생하게 될 경우 반환하게 되는 부분
+                  //       else if (snapshot.hasError) {
+                  //         return Padding(
+                  //           padding: const EdgeInsets.all(8.0),
+                  //           child: Text(
+                  //             'Error: ${snapshot.error}',
+                  //             style: TextStyle(fontSize: 15),
+                  //           ),
+                  //         );
+                  //       }
+                  //       else { // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
+                  //         print('보유주식 현황 :: ');
+                  //         print(snapshot.data);
+                  //         print(snapshot.data);
+                  //         //money = snapshot.data['money'];
+                  //         String showMoney =  '';      
 
-                          return Text("주식 : $showMoney");
-                        }
-                    }
-                  ),
+                  //         if (money > 0){ 
+                  //           showMoney = '+'+money.toString();
+                  //         }else{
+                  //           showMoney = '-'+money.toString();
+                  //         }
+
+                  //         return Text("주식 : $showMoney");
+                  //       }
+                  //   }
+                  // ),
+                  
                   FutureBuilder(
-                    future: _firestore.collection('users').doc(_fireauth.currentUser!.uid).get(), 
+                    future: _firestore.collection('users').doc(widget.uid).get(), 
                     builder: (BuildContext context, AsyncSnapshot snapshot){
                         if (snapshot.hasData == false) {
                           return CircularProgressIndicator();
@@ -235,7 +240,7 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
                     child:
                     StreamBuilder(
                         //stream: _firestore.collection('stock').snapshots(),
-                        stream: _firestore.collection('users').doc(_fireauth.currentUser!.uid).collection('stocks').snapshots(),
+                        stream: _firestore.collection('users').doc(widget.uid).collection('stocks').snapshots(),
                         builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -360,6 +365,25 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
                           Flexible(
                             flex: 1,
                             child: Text(stock)
+                          ),
+                        ],
+                        )                   
+                      )
+                  ), 
+
+                  Flexible(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.center, 
+                      child: Column(
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            child: Container(alignment: Alignment.center,child: Text('합계'),),
+                          ),
+                          Flexible(
+                            flex: 1,
+                            child: Text(koMoneyUnit.format((int.parse(smoney) * int.parse(stock))).toString()),
                           ),
                         ],
                         )                   

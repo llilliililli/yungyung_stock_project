@@ -258,7 +258,7 @@ class _StockYearUpdatePageState extends State<StockYearUpdate> {
                   )
                 ),
                 onPressed: () => {
-                  goBuyDetail(name,uid)
+                  //goBuyDetail(name,uid)
                 },
                 child: Text(name),
               ),
