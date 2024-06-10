@@ -250,18 +250,19 @@ class _StockYearUpdatePageState extends State<StockYearUpdate> {
            color: colorData,
            child: Container(
               alignment: Alignment.center,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: colorData,
-                  textStyle: const TextStyle(
-                    fontSize: 20,
-                  )
-                ),
-                onPressed: () => {
-                  //goBuyDetail(name,uid)
-                },
-                child: Text(name),
-              ),
+              child: Text(name,style:const TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+              // TextButton(
+              //   style: TextButton.styleFrom(
+              //     backgroundColor: colorData,
+              //     textStyle: const TextStyle(
+              //       fontSize: 20,
+              //     )
+              //   ),
+              //   onPressed: () => {
+              //     //goBuyDetail(name,uid)
+              //   },
+              //   child: Text(name),
+              // ),
             ),
           );
   }
