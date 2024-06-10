@@ -7,6 +7,7 @@ import 'package:yungyung_stock_project/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:yungyung_stock_project/stockBuyMain.dart';
+import 'package:yungyung_stock_project/stockYearUpdate.dart';
 
 
 
@@ -261,6 +262,15 @@ class _StockViewPageState extends State<StockViewPage> {
                 title: Text("> 주식 구매"),
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                   builder: (context) => StockBuyMainPage(title: '융융증권 - 주식구매자 선택',),
+                ))
+              ),
+            ),
+             Card(
+              child: 
+              ListTile( 
+                title: Text("> 주식 정보 변경"),
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => StockYearUpdate(title: '융융증권 - 주식 정보 변경',),
                 ))
               ),
             ),

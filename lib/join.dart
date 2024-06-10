@@ -18,8 +18,10 @@ class _JoinPageState extends State<JoinPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController(); //입력되는 값을 제어
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nickNameController = TextEditingController();
 
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
 
   Widget _userIdWidget(){
     return TextFormField(
@@ -56,6 +58,23 @@ class _JoinPageState extends State<JoinPage> {
     );
   }
 
+  Widget _nickNameWidget(){
+    return TextFormField(
+      controller: _nickNameController,
+      keyboardType: TextInputType.text,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: '이름(닉네임)',
+      ),
+      validator: (String? value){
+        if (value!.isEmpty) {// == null or isEmpty
+          return '이름(닉네임)을 입력해주세요.';
+        }
+        return null;
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +95,8 @@ class _JoinPageState extends State<JoinPage> {
               _userIdWidget(),
               const SizedBox(height: 20.0),
               _passwordWidget(),
+              const SizedBox(height: 20.0),
+              _nickNameWidget(),
               Container(
                 height: 70,
                 width: double.infinity,
@@ -86,12 +107,6 @@ class _JoinPageState extends State<JoinPage> {
                 ),
               ),
               const SizedBox(height: 20.0),
-              GestureDetector(
-                child: const Text('회원 가입'),
-                onTap: (){
-                  //Get.to(() => const JoinPage());
-                },
-              ),
             ],
           ),
         ),
@@ -111,6 +126,7 @@ class _JoinPageState extends State<JoinPage> {
     // 해당 클래스가 사라질떄
     _emailController.dispose();
     _passwordController.dispose();
+    _nickNameController.dispose();
     super.dispose();
   }
  
@@ -122,16 +138,78 @@ class _JoinPageState extends State<JoinPage> {
       // Firebase 사용자 인증, 사용자 등록
       try {
 
+        String uid = "";
+
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text)
           .then((value) {
+            //print('join value :: '+value.toString());
+            print('join value.user :: '+value.user!.toString());
+            print('join value.user.uid :: '+value.user!.uid.toString());
+
+            uid = value.user!.uid.toString();
+
+            
             if (value.user!.email == null) {
             } else {
-              Navigator.pop(context);
+              //Navigator.pop(context);
             }
+            
             return value;
+
+
           });
+
+           String year = "2023"; // 최초년도 기입
+          var yearStocksList = [];
+          await _firestore.collection("year").doc(year).collection('stocks').get().then((value) {
+            for(var docSnapShot in value.docs){
+                //print(docSnapShot.data());
+                yearStocksList.add(docSnapShot.data());
+            }
+          });
+
+
+          print(yearStocksList);
+
+          String name =_nickNameController.text;
+          int money = 200000; // 최초 자금 기입
+
+          await _firestore.collection("users").doc(uid).set({
+                "name" : name,
+                "money" : money,
+                "uid" : uid
+          });
+
+
+          for(var yearStock in yearStocksList){
+
+            String name = yearStock["name"] as String;
+            String pmoney = yearStock["pmoney"] as String;
+            String smoney = yearStock["smoney"] as String;
+            String title = yearStock["title"] as String;
+            String stock ="0";
+
+            print('join yaer :: '+year);
+            print('join name :: '+name);
+            print('join pmoney :: '+pmoney);
+            print('join smoney :: '+smoney);
+            print('join title :: '+title);
+
+            await _firestore.collection("users").doc(uid).collection("stocks").doc(name).set({
+                "name" : name,
+                "pmoney" : pmoney,
+                "smoney" : smoney,
+                "stock": stock,
+                "title" : title
+            });
+
+          }
+
+
+        Navigator.pop(context);  
+
  
         Get.offAll(() => const LoginPage());
       } on FirebaseAuthException catch (e) {

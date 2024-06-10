@@ -32,6 +32,7 @@ class _StockBuyDetailPageState extends State<StockBuyDetailPage> {
   int stockMoney = 0; // 사용자 주식현금
 
 
+
  
   var koMoneyUnit = NumberFormat.currency(locale: 'ko_KR', symbol: '₩');
   var moneyUnit = NumberFormat('###,###,###,###');

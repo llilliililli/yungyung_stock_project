@@ -85,12 +85,15 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 20.0),
-              GestureDetector(
-                child: const Text('회원 가입'),
-                onTap: (){
-                  Get.to(() => const JoinPage());
-                },
-              ),
+              Container(
+                height: 70,
+                width: double.infinity,
+                padding: const EdgeInsets.only(top: 8.0), // 8단위 배수가 보기 좋음
+                child: ElevatedButton(
+                    onPressed: () =>  Get.to(() => const JoinPage()),
+                    child:  const Text('회원 가입'),
+                ),
+              ),            
             ],
           ),
         ),
