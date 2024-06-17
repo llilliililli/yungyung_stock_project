@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:yungyung_stock_project/stockView.dart';
 import 'package:yungyung_stock_project/join.dart';
 import 'package:yungyung_stock_project/main.dart';
+import 'package:yungyung_stock_project/stockViewUser.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -127,8 +128,19 @@ class _LoginPageState extends State<LoginPage> {
           email: _emailController.text,
           password: _passwordController.text,
         );
+
+        String yyUid = "vL0NcKHDa0NJsctxL2ZOrCV9WUF2"; //가영 계정
+        String jgUid = "APkKManQw2NmW2t9O9npLQRZbU82"; //준구 계정
+
+        print("login Uid  :: ");
+        print(FirebaseAuth.instance.currentUser!.uid);
+        if(FirebaseAuth.instance.currentUser!.uid == yyUid || FirebaseAuth.instance.currentUser!.uid == jgUid){
+           Get.off(() => const StockViewPage(title: '융융증권',));
+        }else{
+          Get.offAll(() => const StockViewUserPage(title: '융융증권'));
+        }
  
-        Get.offAll(() => const StockViewPage(title: '융융증권'));
+        
       } on FirebaseAuthException catch (e) {
         //logger.e(e);
         String message = '';
