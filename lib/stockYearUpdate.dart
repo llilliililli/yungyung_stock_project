@@ -319,13 +319,13 @@ void showPopup(context, year){ //구매/판매 팝업
                       label: const Text('변경'),
                     ),
                     //생성버튼
-                    ElevatedButton.icon(onPressed: () => _createStocks(year),
-                      icon: const Icon(
-                        Icons.check,
-                        color: Colors.blue,
-                      ),
-                      label: const Text('생성'),
-                    ),
+                    // ElevatedButton.icon(onPressed: () => _createStocks(year),
+                    //   icon: const Icon(
+                    //     Icons.check,
+                    //     color: Colors.blue,
+                    //   ),
+                    //   label: const Text('생성'),
+                    // ),
                     ElevatedButton.icon(onPressed: () {  //닫기 버튼
                       Navigator.pop(context);
                       },
@@ -491,51 +491,51 @@ void showPopup(context, year){ //구매/판매 팝업
 var stockList = [
   {
       "title": "A_전자",
-      "smoney": '35000',
+      "smoney": '55000',
       "name": 'A_elec',
-      "pmoney": '45000'
+      "pmoney": '38000'
     },
     {
       "title": "B_자동차",
-      "smoney": '90000',
+      "smoney": '160000',
       "name": 'B_car',
-      "pmoney": '100000'
+      "pmoney": '80000'
     },
     {
       "title": "C_바이오",
-      "smoney": '10000',
+      "smoney": '350000',
       "name": 'C_bio',
-      "pmoney": '20000'
+      "pmoney": '160000'
     },
     {
       "title": "D_게임",
-      "smoney": '15000',
+      "smoney": '540000',
       "name": 'D_game',
-      "pmoney": '10000'
+      "pmoney": '800000'
     },
     {
       "title": "E_IT",
-      "smoney": '10000',
+      "smoney": '31000',
       "name": 'E_it',
-      "pmoney": '30000'
+      "pmoney": '78000'
     },
     {
       "title": "F_엔터",
-      "smoney": '5000',
+      "smoney": '37000',
       "name": 'F_ent',
-      "pmoney": '10000'
+      "pmoney": '18000'
     },
     {
       "title": "G_화학",
-      "smoney": '3000',
+      "smoney": '420000',
       "name": 'G_chem',
-      "pmoney": '10000'
+      "pmoney": '310000'
     },
     {
       "title": "H_반도체",
-      "smoney": '1000',
+      "smoney": '95000',
       "name": 'H_bando',
-      "pmoney": '50000'
+      "pmoney": '60000'
     }
   ];
 
@@ -558,7 +558,7 @@ var stockList = [
 
       for(var idx = 0; idx < stockList.length; idx++){
 
-          String year = "2023"; // 생성 주식 년도 기입
+          String year = "2021"; // 생성 주식 년도 기입
           String name = stockList[idx]["name"] as String;
           String pmoney = stockList[idx]["pmoney"] as String;
           String smoney = stockList[idx]["smoney"] as String;

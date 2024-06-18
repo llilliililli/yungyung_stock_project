@@ -161,7 +161,7 @@ class _JoinPageState extends State<JoinPage> {
 
           });
 
-           String year = "2023"; // 최초년도 기입
+           String year = "2016"; // 최초년도 기입 2016
           var yearStocksList = [];
           await _firestore.collection("year").doc(year).collection('stocks').get().then((value) {
             for(var docSnapShot in value.docs){
@@ -174,7 +174,7 @@ class _JoinPageState extends State<JoinPage> {
           print(yearStocksList);
 
           String name =_nickNameController.text;
-          int money = 200000; // 최초 자금 기입
+          int money = 1000000; // 최초 자금 기입 100만원
 
           await _firestore.collection("users").doc(uid).set({
                 "name" : name,
